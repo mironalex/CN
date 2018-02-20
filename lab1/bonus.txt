@@ -1,0 +1,3 @@
+ - interfata grafica
+ - aratam ca inmultirea e mai grea decat adunarea
+ - strassen pe orice dimensiune
