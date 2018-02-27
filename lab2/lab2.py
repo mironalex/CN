@@ -14,7 +14,7 @@ def solve_diagonal_system(system, result):
                              zip(system[idx, idx + 1:], solution[idx + 1:, 0]),
                              0)
 
-        solution[idx, 0] = (result[idx] - line_offset) / system[idx][idx]
+        solution[idx, 0] = (result[idx, 0] - line_offset) / system[idx][idx]
 
     return solution
 
@@ -35,8 +35,8 @@ def reduce_system(system, result, column=0):
         system[line] *= normalization_factor
         system[line] -= system[column]
 
-        result[line] *= normalization_factor
-        result[line] -= result[column]
+        result[line, 0] *= normalization_factor
+        result[line, 0] -= result[column, 0]
 
     reduce_system(system, result, column=column + 1)
 
@@ -51,20 +51,26 @@ def solve_system(system, result):
 
 if __name__ == '__main__':
     system = np.array([
-        [3.0, 2.0, 3.0],
-        [0.0, 3.0, 5.0],
-        [6.0, 1.0, 4.0],
+        [3.0, 2.0, 0.0],
+        [6.0, 3.0, 5.0],
+        [0.0, 1.0, 4.0],
     ])
 
-    result = np.array(
-        [12.0, 11.0, 10.0]
-    )
+    result = np.array([
+        [12.0],
+        [11.0],
+        [10.0]
+    ])
 
     solution = solve_system(
         system,
         result
     )
 
-    print(np.matmul(system, solution))
+    print("Solution =", solution)
+    solution_result = np.matmul(system, solution)
+    print("A * x_sol =", solution_result)
+    print("Result = ", result)
+    print("Norm: ", np.linalg.norm(result - solution_result))
 
 
