@@ -1,0 +1,70 @@
+from functools import reduce
+
+import numpy as np
+
+
+def solve_diagonal_system(system, result):
+    assert len(system.shape) == 2
+    assert system.shape[0] == system.shape[1], "Must be a square matrix"
+
+    solution = np.zeros((system.shape[1], 1))
+    lines, columns = system.shape
+    for idx in reversed(range(0, lines)):
+        line_offset = reduce(lambda accumulator, comb: accumulator + comb[0] * comb[1],
+                             zip(system[idx, idx + 1:], solution[idx + 1:, 0]),
+                             0)
+
+        solution[idx, 0] = (result[idx] - line_offset) / system[idx][idx]
+
+    return solution
+
+
+def reduce_system(system, result, column=0):
+    if column == system.shape[1]:
+        return
+
+    idx = column + system[column:, column].argmax()
+    system[[column, idx]] = system[[idx, column]]
+    result[[column, idx]] = result[[idx, column]]
+
+    for line in range(column + 1, system.shape[0]):
+        if system[line, column] == 0:
+            continue
+
+        normalization_factor = system[column, column] / system[line, column]
+        system[line] *= normalization_factor
+        system[line] -= system[column]
+
+        result[line] *= normalization_factor
+        result[line] -= result[column]
+
+    reduce_system(system, result, column=column + 1)
+
+
+def solve_system(system, result):
+    internal_system = np.copy(system)
+    internal_result = np.copy(result)
+
+    reduce_system(internal_system, internal_result)
+    return solve_diagonal_system(internal_system, internal_result)
+
+
+if __name__ == '__main__':
+    system = np.array([
+        [3.0, 2.0, 3.0],
+        [0.0, 3.0, 5.0],
+        [6.0, 1.0, 4.0],
+    ])
+
+    result = np.array(
+        [12.0, 11.0, 10.0]
+    )
+
+    solution = solve_system(
+        system,
+        result
+    )
+
+    print(np.matmul(system, solution))
+
+
