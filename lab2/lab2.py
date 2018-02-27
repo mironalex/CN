@@ -28,6 +28,7 @@ def reduce_system(system, result, column=0):
     result[[column, idx]] = result[[idx, column]]
 
     for line in range(column + 1, system.shape[0]):
+        # TODO: epsilon division instead of skipping
         if system[line, column] == 0:
             continue
 
@@ -48,11 +49,12 @@ def solve_system(system, result):
     reduce_system(internal_system, internal_result)
     return solve_diagonal_system(internal_system, internal_result)
 
+# TODO: random generation
 
 if __name__ == '__main__':
     system = np.array([
         [3.0, 2.0, 0.0],
-        [6.0, 3.0, 5.0],
+        [6.0, 4.0, 0.0],
         [0.0, 1.0, 4.0],
     ])
 
@@ -62,15 +64,17 @@ if __name__ == '__main__':
         [10.0]
     ])
 
+    # TODO: try catch for determinant 0
     solution = solve_system(
         system,
         result
     )
 
+    # TODO: solutia noastra - solutia biblioteca - l2norm
+    # TODO: solutia noastra * sistemul - resultatul - l2norm
+    # TODO: solutia biblioteca * sistemul - resultatul - l2norm
     print("Solution =", solution)
     solution_result = np.matmul(system, solution)
     print("A * x_sol =", solution_result)
     print("Result = ", result)
     print("Norm: ", np.linalg.norm(result - solution_result))
-
-
