@@ -1,6 +1,7 @@
 from functools import reduce
 
 import numpy as np
+import random
 
 
 def solve_diagonal_system(system, result):
@@ -49,25 +50,33 @@ def solve_system(system, result):
     return solve_diagonal_system(internal_system, internal_result)
 
 
-if __name__ == '__main__':
-    system = np.array([
-        [3.0, 2.0, 0.0],
-        [6.0, 3.0, 5.0],
-        [0.0, 1.0, 4.0],
-    ])
+def generate_random_sytem(size):
+    system = []
+    for i in range(0, size):
+        current_line = []
+        for j in range(0, size):
+            current_line.append(random.random())
+        system.append(current_line)
 
-    result = np.array([
-        [12.0],
-        [11.0],
-        [10.0]
-    ])
+    result = []
+    for i in range(0, size):
+        result.append([random.random()])
+    return np.array(system), result
+
+if __name__ == '__main__':
+    sys_result_pair = generate_random_sytem(3)
+
+    system = sys_result_pair[0]
+    result = sys_result_pair[1]
 
     solution = solve_system(
         system,
         result
     )
 
-    print("Solution =", solution)
+    print("Numpy Solution =", np.linalg.solve(system, result))
+
+    print("Our Solution =", solution)
     solution_result = np.matmul(system, solution)
     print("A * x_sol =", solution_result)
     print("Result = ", result)
