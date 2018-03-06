@@ -20,8 +20,9 @@ def solve_ex2():
 
     multiply_expression1 = 0
     multiply_expression2 = 0
-
-    while(multiply_expression1 == multiply_expression2):
+    iterations = 0
+    while multiply_expression1 == multiply_expression2:
+        iterations += 1
         x = random()/1000
         y = random()/1000
         z = random()/1000
@@ -29,9 +30,10 @@ def solve_ex2():
         multiply_expression2 = x * (y * z)
 
     print("\nSolution for which multiplication is not associative:\n")
-    print(x, y, z)
+    print("\tFound in: ", iterations, " iterations\n")
+    print("\t",x, y, z, "\n")
     return add_expression1 == add_expression2, multiply_expression1 == multiply_expression2
 
-
-print(solve_ex1())
-print(solve_ex2())
+if __name__ == "__main__":
+    print(solve_ex1())
+    print(solve_ex2())

@@ -1,5 +1,5 @@
 import numpy as np
-
+import random
 
 def four_way_slice(m, n):
     m11 = m[:n // 2, :n // 2]
@@ -54,6 +54,16 @@ def multiply_Strassen(a, b, n, n_min):
     result = multiply_Strassen_pad(a_padded, b_padded, pad_size, n_min)
 
     return result[:size, :size]
+
+
+def generate_random_matrix(size):
+    matrix = []
+    for i in range(0, size):
+        current_line = []
+        for j in range(0, size):
+            current_line.append(random.random() * 10)
+        matrix.append(current_line)
+    return matrix
 
 
 if __name__ == '__main__':

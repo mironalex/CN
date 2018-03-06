@@ -1,4 +1,5 @@
 from functools import reduce
+from lab1.ex12 import solve_ex1
 
 import numpy as np
 import random
@@ -29,8 +30,8 @@ def reduce_system(system, result, column=0):
     result[[column, idx]] = result[[idx, column]]
 
     for line in range(column + 1, system.shape[0]):
-        # TODO: epsilon division instead of skipping
-        if system[line, column] == 0:
+        epsilon = solve_ex1()
+        if -epsilon <= system[line, column] <= epsilon:
             continue
 
         normalization_factor = system[column, column] / system[line, column]
@@ -50,28 +51,34 @@ def solve_system(system, result):
     reduce_system(internal_system, internal_result)
     return solve_diagonal_system(internal_system, internal_result)
 
-# TODO: random generation
 
-def generate_random_sytem(size):
+def generate_random_system(size):
     system = []
     for i in range(0, size):
         current_line = []
         for j in range(0, size):
-            current_line.append(random.random())
+            current_line.append(random.random()*10)
         system.append(current_line)
 
     result = []
     for i in range(0, size):
-        result.append([random.random()])
+        result.append([random.random()*10])
     return np.array(system), result
 
 if __name__ == '__main__':
-    sys_result_pair = generate_random_sytem(3)
+    sys_result_pair = generate_random_system(10)
 
     system = sys_result_pair[0]
     result = sys_result_pair[1]
 
-    # TODO: try catch for determinant 0
+    try:
+        determinant = np.linalg.det(system)
+        if determinant == 0:
+            raise ValueError("Error: Determinant is 0")
+    except ValueError as error:
+        print(repr(error))
+        exit(1)
+
     solution = solve_system(
         system,
         result
