@@ -63,25 +63,21 @@ def generate_random_matrix(size):
         for j in range(0, size):
             current_line.append(random.random() * 10)
         matrix.append(current_line)
-    return matrix
+    return np.array(matrix)
 
 
 if __name__ == '__main__':
-    a = np.array([
-        [-1, -2, -3, -4, -5],
-        [-5, -6, -7, -8, -9],
-        [-9, -10, -11, -12, -13],
-        [-13, -14, -15, -16, -17],
-        [-17, -18, -19, -20, -21],
-    ])
+    size = 100
 
-    b = np.array([
-        [1, 2, 3, 4, 5],
-        [5, 6, 7, 8, 9],
-        [9, 10, 11, 12, 13],
-        [13, 14, 15, 16, 17],
-        [17, 18, 19, 20, 21]
-    ])
+    a = generate_random_matrix(size)
 
-    print(multiply_Strassen(a, b, 5, 2))
-    print(np.matmul(a, b))
+    b = generate_random_matrix(size)
+
+    our_result = multiply_Strassen(a, b, size, 2)
+    np_result = np.matmul(a, b)
+
+    norm_matrix = our_result - np_result
+
+    #print(multiply_Strassen(a, b, size, 2))
+    #print(np.matmul(a, b))
+    print("Norm =", np.linalg.norm(norm_matrix))

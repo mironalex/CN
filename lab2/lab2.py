@@ -57,16 +57,24 @@ def generate_random_system(size):
     for i in range(0, size):
         current_line = []
         for j in range(0, size):
-            current_line.append(random.random()*10)
+            current_line.append(random.random() * 10)
         system.append(current_line)
 
     result = []
     for i in range(0, size):
-        result.append([random.random()*10])
+        result.append([random.random() * 10])
     return np.array(system), result
 
+
+def flip(vali_list):
+    result = []
+    for x in vali_list:
+        result.append(x[0])
+    return result
+
+
 if __name__ == '__main__':
-    sys_result_pair = generate_random_system(10)
+    sys_result_pair = generate_random_system(100)
 
     system = sys_result_pair[0]
     result = sys_result_pair[1]
@@ -84,11 +92,24 @@ if __name__ == '__main__':
         result
     )
 
-    # TODO: solutia noastra - solutia biblioteca - l2norm
-    # TODO: solutia noastra * sistemul - resultatul - l2norm
-    # TODO: solutia biblioteca * sistemul - resultatul - l2norm
+    np_solution = np.linalg.solve(system, result)
+
+    """
     print("Solution =", solution)
+    print("NP Solution =", np_solution)
+    """
+
+    solution_norm = solution - np_solution
+    print("Norma solutia noastra - solutia biblioteca =", np.linalg.norm(solution_norm))
+
+    solution_mul_sys = np.matmul(system, solution) - result
+    print("Norma solutia noastra * sistemul - rezultatul =", np.linalg.norm(solution_mul_sys))
+
+    np_solution_mul_sys = np.matmul(system, np_solution) - result
+    print("Norma solutia biblioteca * sistemul - rezultatul =", np.linalg.norm(np_solution_mul_sys))
+    """
     solution_result = np.matmul(system, solution)
     print("A * x_sol =", solution_result)
     print("Result = ", result)
     print("Norm: ", np.linalg.norm(result - solution_result))
+    """
