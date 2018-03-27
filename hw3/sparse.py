@@ -15,7 +15,7 @@ class SparseList:
     def __eq__(self, other):
         if self.rows != other.rows or self.columns != other.columns:
             return False
-        for line in range(0, self.rows):
+        for line in range(0, self.rows+1):
             if len(self.values[line]) != len(other.values[line]):
                 return False
             self.values[line] = sorted(self.values[line], key=lambda entry: entry[1])
@@ -32,7 +32,7 @@ class SparseList:
             return None
         else:
             values = [x[:] for x in self.values]
-            for i in range(0, self.rows):
+            for i in range(0, self.rows+1):
                 if other.values[i]:
                     for j in range(0, len(other.values[i])):
                         found = False
@@ -46,10 +46,18 @@ class SparseList:
             return SparseList(self.rows, self.columns, values)
 
     def __mul__(self, other):
-        if self.columns != other.lines:
+        if self.columns != other.rows:
             return None
 
-        return SparseList(self.rows, other.columns, self.values)
+        result = SparseList()
+
+        for i in range(0, self.rows+1):
+            for j in range(0, len(self.values[i])):
+                entry = self.values[i][j]
+                for k in range(0, len(other.values[entry[1]])):
+                    result.insert(other.values[entry[1]][k][0] * entry[0], i, other.values[entry[1]][k][1])
+
+        return result
 
     def insert(self, value, line, column):
         if line > self.rows:
@@ -60,6 +68,6 @@ class SparseList:
             self.columns = column
         for i in range(0, len(self.values[line])):
             if self.values[line][i][1] == column:
-                self.values[line][i][0] += value
+                self.values[line][i] = (self.values[line][i][0] + value, self.values[line][i][1])
                 return
         self.values[line].append((value, column))
