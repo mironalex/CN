@@ -69,6 +69,15 @@ def solve_aorib():
     print("M-M test passed: ", result_aorib == aorib_matrix)
 
 
+def solve_amatmulb():
+    start = time.time()
+    result_amatmulb = sparse.matmul(a_matrix, b_matrix)
+    end = time.time()
+    print("\nM-M matmul Multiplication Time Elapsed:", end - start)
+    print("M-M matmul test passed: ", result_amatmulb == aorib_matrix)
+
+
 init()
 solve_aplusb()
 solve_aorib()
+solve_amatmulb()

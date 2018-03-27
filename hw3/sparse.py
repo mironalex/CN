@@ -71,3 +71,49 @@ class SparseList:
                 self.values[line][i] = (self.values[line][i][0] + value, self.values[line][i][1])
                 return
         self.values[line].append((value, column))
+
+
+def matmul(a: SparseList, b: SparseList):
+    b.values = [sorted(row, key=lambda e: e[1]) for row in b.values]
+
+    c = SparseList(rows=a.rows, columns=b.columns)
+
+    for row in range(a.rows + 1):
+        c.values.append(list())
+        cols = [0] * len(a.values[row])
+        outs = 0
+        results = {}
+        while outs < len(a.values[row]):
+            outs = 0
+            colmin = float('inf')
+            for aidx, (avalue, acol) in enumerate(a.values[row]):
+                if cols[aidx] >= len(b.values[acol]):
+                    outs += 1
+                    continue
+
+                bvalue, bcol = b.values[acol][cols[aidx]]
+
+                if bcol < colmin:
+                    colmin = bcol
+
+                if bcol == colmin:
+                    last_result = results.get(bcol, 0)
+                    results[bcol] = last_result + avalue * bvalue
+                    cols[aidx] += 1
+
+            if outs < len(a.values[row]):
+                c.values[row].append((results[colmin], colmin))
+                results[colmin] = 0
+
+        for col in results:
+            val = results[col]
+            if val != 0:
+                c.values[row].append((val, col))
+    return c
+
+
+if __name__ == '__main__':
+    a = SparseList(rows=2, columns=2, values=[[(2, 0), (2, 1), (3, 2)], [(1, 1)], [(1, 2)]])
+    b = SparseList(rows=2, columns=2, values=[[(2, 0), (3, 2)], [(3, 2)], [(4, 1)]])
+
+    print(matmul(a, b).values)
