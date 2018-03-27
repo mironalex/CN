@@ -1,7 +1,9 @@
-"""The required implementation of sparse matrix"""
+import copy
 
 epsilon = 10e-10
 
+
+"""The required implementation of sparse matrix"""
 class SparseList:
     def __init__(self, rows=0, columns=0, values=None):
         self.rows = rows
@@ -29,7 +31,7 @@ class SparseList:
         if self.rows != other.rows or self.columns != other.columns:
             return None
         else:
-            values = self.values
+            values = [x[:] for x in self.values]
             for i in range(0, self.rows):
                 if other.values[i]:
                     for j in range(0, len(other.values[i])):
@@ -41,8 +43,13 @@ class SparseList:
                                 break
                         if not found:
                             values[i].insert(0, other.values[i][j])
-
             return SparseList(self.rows, self.columns, values)
+
+    def __mul__(self, other):
+        if self.columns != other.lines:
+            return None
+
+        return SparseList(self.rows, other.columns, self.values)
 
     def insert(self, value, line, column):
         if line > self.rows:
@@ -56,14 +63,3 @@ class SparseList:
                 self.values[line][i][0] += value
                 return
         self.values[line].append((value, column))
-
-
-class SparseCSR:
-    """An implementation of Compressed sparse row sparse matrix"""
-
-    def __init__(self):
-        self.rows = 0
-        self.columns = 0
-        self.values = []
-        self.column_idx = []
-        self.row_start = []
