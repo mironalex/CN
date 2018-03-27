@@ -5,18 +5,18 @@ a_matrix = sparse.SparseList()
 b_matrix = sparse.SparseList()
 aplusb_matrix = sparse.SparseList()
 aorib_matrix = sparse.SparseList()
-ax = []
-bx = []
+given_ax = []
+given_bx = []
 aplusbx = []
 aoribx = []
-
+epsilon = 10e-10
 
 def init():
     with open('a.txt') as f:
         n = int(f.readline())
         f.readline()
         for i in range(0, n):
-            ax.append(float(f.readline()))
+            given_ax.append(float(f.readline()))
         f.readline()
         for line in f:
             values = str.split(line, ",")
@@ -26,7 +26,7 @@ def init():
         n = int(f.readline())
         f.readline()
         for i in range(0, n):
-            bx.append(float(f.readline()))
+            given_bx.append(float(f.readline()))
         f.readline()
         for line in f:
             values = str.split(line, ",")
@@ -77,7 +77,26 @@ def solve_amatmulb():
     print("M-M matmul test passed: ", result_amatmulb == aorib_matrix)
 
 
+def solve_mv_mult():
+    v = list(range(2018, 0, -1))
+    start = time.time()
+    result_aoriv = v * a_matrix
+    result_boriv = v * b_matrix
+    end = time.time()
+    print("\nM-V Multiplication Time Elapsed:", end - start)
+    passed = True
+    for i in range(0, len(result_aoriv)):
+        if abs(result_aoriv[i] - given_ax[i]) > 10e-9:
+            passed = False
+            break
+        if abs(result_boriv[i] - given_bx[i]) > 10e-9:
+            passed = False
+            break
+    print("M-V test passed: ", passed)
+
+
 init()
 solve_aplusb()
 solve_aorib()
 solve_amatmulb()
+solve_mv_mult()
