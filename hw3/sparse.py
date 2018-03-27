@@ -56,8 +56,19 @@ class SparseList:
                 entry = self.values[i][j]
                 for k in range(0, len(other.values[entry[1]])):
                     result.insert(other.values[entry[1]][k][0] * entry[0], i, other.values[entry[1]][k][1])
-
         return result
+
+    def __rmul__(self, other: []):
+        if len(other) != self.rows+1:
+            return None
+        else:
+            result = []
+            for i in range(0, self.rows+1):
+                value = 0
+                for entry in self.values[i]:
+                    value += entry[0] * other[entry[1]]
+                result.append(value)
+            return result
 
     def insert(self, value, line, column):
         if line > self.rows:
