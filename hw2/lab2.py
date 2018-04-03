@@ -1,5 +1,5 @@
 from functools import reduce
-from lab1.ex12 import solve_ex1
+from hw1.ex12 import solve_ex1
 
 import numpy as np
 import random
