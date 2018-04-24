@@ -1,11 +1,10 @@
 from hw3 import sparse
 import numpy as np
 
-epsilon = 10e-15
+epsilon = 10e-10
 
 
 def calculate_norm(x, y):
-    result = 0
     if len(x) != len(y):
         return None
     return np.linalg.norm(np.asarray(x) - np.asarray(y))
@@ -57,24 +56,32 @@ def solve(filename):
             sum1 = 0
             sum2 = 0
             for j in range(0, len(A.values[i])):
-                if A.values[i][j][1]-1 < i:
-                    sum1 += A.values[i][j][0] * xGS[j]
-                elif A.values[i][j][1]-1 > i:
-                    sum2 += A.values[i][j][0] * x_prev[j]
+                column = A.values[i][j][1]
+                if A.values[i][j][1] < i:
+                    sum1 += A.values[i][j][0] * xGS[column]
+                elif A.values[i][j][1] > i:
+                    sum2 += A.values[i][j][0] * x_prev[column]
             xGS[i] = (b[i] - sum1 - sum2)/diag[i]
         norm = calculate_norm(xGS, x_prev)
         print("\tnorm at iteration ", it, ": ", norm)
         it += 1
         x_prev = xGS
+        if norm == float('Inf'):
+            print("\tSolution Diverges")
+            break
 
     solution_norm = calculate_norm(xGS * A, b)
-    test_norm = calculate_norm(([1.0/3.0] * n) * A, b)
+    #test_norm = calculate_norm(([1.0] * n) * A, b)
     print("Solution Norm: ", solution_norm)
-    print("Test Norm: ", test_norm)
+    #print("Test Norm: ", test_norm)
     print("done.")
 
 
 if __name__ == "__main__":
+    solve("m_rar_2018_1.txt")
     solve("m_rar_2018_2.txt")
+    solve("m_rar_2018_3.txt")
+    solve("m_rar_2018_4.txt")
+    solve("m_rar_2018_5.txt")
 
 
