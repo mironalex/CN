@@ -63,16 +63,17 @@ def solve(filename):
                     sum2 += A.values[i][j][0] * x_prev[column]
             xGS[i] = (b[i] - sum1 - sum2)/diag[i]
         norm = calculate_norm(xGS, x_prev)
-        print("\tnorm at iteration ", it, ": ", norm)
+        #print("\tnorm at iteration ", it, ": ", norm)
         it += 1
         x_prev = xGS
         if norm == float('Inf'):
             print("\tSolution Diverges")
             break
 
+    print("\tIterations: ", it)
     solution_norm = calculate_norm(xGS * A, b)
     #test_norm = calculate_norm(([1.0] * n) * A, b)
-    print("Solution Norm: ", solution_norm)
+    print("\tSolution Norm: ", solution_norm)
     #print("Test Norm: ", test_norm)
     print("done.")
 
