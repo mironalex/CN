@@ -3,8 +3,13 @@ import copy
 epsilon = 10e-10
 
 
-"""The required implementation of sparse matrix"""
 class SparseList:
+    """
+    The required implementation of sparse matrix
+    Values is a list of list where each sublist i
+    contains tupples (v,j) where v is a nonzero
+    value on line i and column j of the sparse matrix
+    """
     def __init__(self, rows=0, columns=0, values=None):
         self.rows = rows
         self.columns = columns
