@@ -1,16 +1,14 @@
 from hw3 import sparse
+import numpy as np
 
-
-epsilon = 10e-10
+epsilon = 10e-15
 
 
 def calculate_norm(x, y):
     result = 0
     if len(x) != len(y):
         return None
-    for i in range(0, len(x)):
-        result += abs(x[i] - y[i])
-    return result
+    return np.linalg.norm(np.asarray(x) - np.asarray(y))
 
 
 def read_input(filename):
@@ -68,9 +66,15 @@ def solve(filename):
         print("\tnorm at iteration ", it, ": ", norm)
         it += 1
         x_prev = xGS
+
+    solution_norm = calculate_norm(xGS * A, b)
+    test_norm = calculate_norm(([1.0/3.0] * n) * A, b)
+    print("Solution Norm: ", solution_norm)
+    print("Test Norm: ", test_norm)
     print("done.")
 
 
 if __name__ == "__main__":
-    solve("m_rar_2018_1.txt")
+    solve("m_rar_2018_2.txt")
+
 
