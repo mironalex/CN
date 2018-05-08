@@ -33,7 +33,7 @@ def solve(filename):
     for i in range(0, n):
         for value in A.values[i]:
             j = value[1]
-            if j == i and value[0] <= epsilon:
+            if j == i and abs(value[0]) <= epsilon:
                 diag_contains_zero = True
                 break
         if diag_contains_zero:
@@ -44,12 +44,11 @@ def solve(filename):
     if diag_contains_zero:
         return
 
-    x_prev = [0] * n
-    xGS = []
+    xGS = [0] * n
     norm = 1
     it = 0
-    while norm > epsilon:
-        xGS = []
+    while norm > epsilon and norm < 1e+8:
+        norm = 0
         for i in range(0, n):
             sum1 = 0
             sum2 = 0
@@ -58,11 +57,14 @@ def solve(filename):
                 if column < i:
                     sum1 += value * xGS[column]
                 elif column > i:
-                    sum2 += value * x_prev[column]
+                    sum2 += value * xGS[column]
                 elif column == i:
                     diag = value
-            xGS.append((b[i] - sum1 - sum2) / diag)
-        norm = calculate_norm(xGS, x_prev)
+            val = xGS[i]
+            xGS[i] = (b[i] - sum1 - sum2) / diag
+
+            norm += pow((val - xGS[i]), 2)
+
         print("\tnorm at iteration ", it, ": ", norm)
         it += 1
         x_prev = xGS
