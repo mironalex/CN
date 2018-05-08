@@ -1,31 +1,46 @@
 import numpy as np
 
-epsilon = 10e-10
+epsilon = 10e-20
 kmax = 1000
+
+
+def get_solution_norm(A):
+    max_sum_line = 0
+    for i in range(0, len(A)):
+        current_sum = 0
+        for j in range(0, len(A)):
+            current_sum += abs(A[i][j])
+        if current_sum > max_sum_line:
+            max_sum_line = current_sum
+    return max_sum_line
 
 
 def get_next_schultz(A, V):
     identity = 2 * np.identity(len(A))
-    return np.multiply(V, identity - np.multiply(A, V))
+    tmp = identity - np.matmul(A, V)
+    return np.matmul(V, tmp)
 
 
 def get_next_li1(A, V):
     identity = 3 * np.identity(len(A))
-    AV = np.multiply(A, V)
-    aux = np.multiply(AV, identity - AV)
-    return np.multiply(V, identity - aux)
+    AV = np.matmul(A, V)
+    aux = np.matmul(AV, (identity - AV))
+    return np.matmul(V, (identity - aux))
 
 
 def get_next_li2(A, V):
     identity = np.identity(len(A))
-    VA = np.multiply(V, A)
-    aux1 = np.multiply(1/4, identity - VA)
-    aux2 = np.multiply(3 * identity - VA, 3 * identity - VA)
-    return np.multiply(identity + np.multiply(aux1, aux2), V)
+    VA = np.matmul(V, A)
+    aux1 = (1/4) * (identity - VA)
+    aux2 = np.matmul((3 * identity - VA), (3 * identity - VA))
+    return np.matmul((identity + np.matmul(aux1, aux2)), V)
 
 
 def get_initial_matrix(A):
-    return np.divide(np.transpose(A), np.linalg.norm(A, ord=2))
+    transposed = np.transpose(A)
+    max_sum_column = np.abs(A).sum(axis=0).max()
+    max_sum_line = np.abs(A).sum(axis=1).max()
+    return transposed / (max_sum_line * max_sum_column)
 
 
 def generate_matrix(n):
@@ -37,6 +52,7 @@ def generate_matrix(n):
 
 def solve(alg):
     A = generate_matrix(10)
+
     V_prev = V_next = get_initial_matrix(A)
     k = 0
     norm = 10e9
@@ -54,11 +70,11 @@ def solve(alg):
         V_prev = V_next
     print("\titerations = ", k)
     if norm < epsilon:
-        print("\tdivergence")
-        result_norm = np.linalg.norm(np.multiply(A, V_next) - np.identity((len(A))))
+        print("\tconvergence")
+        result_norm = get_solution_norm(np.matmul(A, V_next) - np.identity(len(A)))
         print("\tnorm = ", result_norm)
     else:
-        print("\tconvergence\n")
+        print("\tdivergence\n")
 
 
 if __name__ == '__main__':
