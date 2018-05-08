@@ -52,6 +52,7 @@ def solve(alg):
         norm = np.linalg.norm(V_next - V_prev)
         k += 1
         V_prev = V_next
+    print("\titerations = ", k)
     if norm < epsilon:
         print("\tdivergence")
         result_norm = np.linalg.norm(np.multiply(A, V_next) - np.identity((len(A))))
