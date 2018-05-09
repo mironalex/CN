@@ -1,7 +1,20 @@
 import numpy as np
 
-epsilon = 10e-20
-kmax = 1000
+epsilon = 10e-10
+kmax = 10000
+
+
+def identity_minus(A, nr):
+    X = A * -1
+    for i in range(len(X)):
+        X[i, i] = nr + X[i, i]
+    return X
+
+
+def identity_plus(A, nr):
+    for i in range(len(A)):
+        A[i, i] = A[i, i] + nr
+    return A
 
 
 def get_solution_norm(A):
@@ -16,24 +29,22 @@ def get_solution_norm(A):
 
 
 def get_next_schultz(A, V):
-    identity = 2 * np.identity(len(A))
-    tmp = identity - np.matmul(A, V)
-    return np.matmul(V, tmp)
+    return np.matmul(V, identity_minus(np.matmul(A, V), 2))
 
 
 def get_next_li1(A, V):
-    identity = 3 * np.identity(len(A))
     AV = np.matmul(A, V)
-    aux = np.matmul(AV, (identity - AV))
-    return np.matmul(V, (identity - aux))
+    aux = np.matmul(AV, identity_minus(AV, 3))
+    return np.matmul(V, identity_minus(aux, 3))
 
 
 def get_next_li2(A, V):
     identity = np.identity(len(A))
     VA = np.matmul(V, A)
-    aux1 = (1/4) * (identity - VA)
-    aux2 = np.matmul((3 * identity - VA), (3 * identity - VA))
-    return np.matmul((identity + np.matmul(aux1, aux2)), V)
+    aux1 = (1/4) * identity_minus(VA, 1)
+    VA_identity = identity_minus(VA, 3)
+    aux2 = np.matmul(VA_identity, VA_identity)
+    return np.matmul(identity_plus(np.matmul(aux1, aux2), 1), V)
 
 
 def get_initial_matrix(A):
@@ -52,7 +63,7 @@ def generate_matrix(n):
 
 def solve(alg):
     A = generate_matrix(10)
-
+    #A = np.random.rand(500, 500) * 1000
     V_prev = V_next = get_initial_matrix(A)
     k = 0
     norm = 10e9
