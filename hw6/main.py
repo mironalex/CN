@@ -65,11 +65,6 @@ def power_method(input_matrix: sparse.SparseList):
     return lambda_current
 
 
-def cacat_cu_smac_rahat_si_oleaca_de_trac(matrix):
-    return numpy.linalg.svd(matrix)
-
-
-
 if __name__ == '__main__':
     # Task 1 and 2
     # print("Power method on random rare matrix:")
@@ -81,6 +76,23 @@ if __name__ == '__main__':
     # print("\tResult: ", power_method(matrix))
 
     # Task 3
-    cacat_cu_smac, rahat, oleaca_de_trac = cacat_cu_smac_rahat_si_oleaca_de_trac(numpy.random.rand(300, 200))
-    print(rahat)
 
+    matrix = np.random.rand(50, 25)
+    u, s, v = np.linalg.svd(matrix)
+
+    nr_s = int(input("Enter number s: "))
+    As = None
+    for col in range(nr_s):
+        u_col = u[0:u.shape[0], col]
+        u_col = np.expand_dims(u_col, 1)
+
+        v_col = v[0:v.shape[0], col]
+        v_col = v_col[np.newaxis]
+
+        temp = np.matmul(u_col, v_col)
+        temp = temp * s[col]
+        if As is None:
+            As = temp
+        else:
+            As = As + temp
+    print("||A - As|| =", np.linalg.norm(matrix - As))
