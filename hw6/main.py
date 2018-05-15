@@ -111,10 +111,29 @@ if __name__ == '__main__':
     svd = numpy.linalg.svd(random_matrix)
     print(svd[1])
     print("Matrix rang:")
-    print("\t", get_matrix_rank(svd[1]))
+    rang = get_matrix_rank(svd[1])
+    print("\t", rang)
     print("Condition number:")
     print("\t", get_condition_number(svd[1]))
     print("Pseudo inverse:")
     print("\t", get_pseudo_inverse(svd))
 
+    u, s, v = svd
+    nr_s = rang + 1
+    while nr_s > rang:
+        nr_s = int(input("Enter number s (<= " + str(rang) + "): "))
+    As = None
+    for col in range(nr_s):
+        u_col = u[0:u.shape[0], col]
+        u_col = np.expand_dims(u_col, 1)
 
+        v_col = v[0:v.shape[0], col]
+        v_col = v_col[np.newaxis]
+
+        temp = np.matmul(u_col, v_col)
+        temp = temp * s[col]
+        if As is None:
+            As = temp
+        else:
+            As = As + temp
+    print("||A - As|| =", np.linalg.norm(random_matrix - As))
