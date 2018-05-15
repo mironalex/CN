@@ -65,6 +65,25 @@ def power_method(input_matrix: sparse.SparseList):
     return lambda_current
 
 
+def get_matrix_rank(singular_values):
+    rank = 0
+    for value in singular_values:
+        if value > epsilon:
+            rank += 1
+    return rank
+
+
+def get_condition_number(singular_values):
+    minimum_singular_value = 10e9
+    maximum_singular_value = epsilon
+    for value in singular_values:
+        if epsilon < value < minimum_singular_value:
+            minimum_singular_value = value
+        if maximum_singular_value < value:
+            maximum_singular_value = value
+    return maximum_singular_value / minimum_singular_value
+
+
 if __name__ == '__main__':
     # Task 1 and 2
     # print("Power method on random rare matrix:")
@@ -76,11 +95,23 @@ if __name__ == '__main__':
     # print("\tResult: ", power_method(matrix))
 
     # Task 3
+    random.seed(14058714618)
+    random_matrix = numpy.random.rand(300, 200)
+    print("Singular values:")
+    svd = numpy.linalg.svd(random_matrix)
+    print(svd[1])
+    print("Matrix rang:")
+    rang = get_matrix_rank(svd[1])
+    print("\t", rang)
+    print("Condition number:")
+    print("\t", get_condition_number(svd[1]))
 
-    matrix = np.random.rand(50, 25)
-    u, s, v = np.linalg.svd(matrix)
+    print("")
 
-    nr_s = int(input("Enter number s: "))
+    u, s, v = svd
+    nr_s = rang + 1
+    while nr_s > rang:
+        nr_s = int(input("Enter number s (<= " + str(rang) + "): "))
     As = None
     for col in range(nr_s):
         u_col = u[0:u.shape[0], col]
@@ -95,4 +126,4 @@ if __name__ == '__main__':
             As = temp
         else:
             As = As + temp
-    print("||A - As|| =", np.linalg.norm(matrix - As))
+    print("||A - As|| =", np.linalg.norm(random_matrix - As))
