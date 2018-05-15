@@ -105,8 +105,11 @@ if __name__ == '__main__':
     # print("\tResult: ", power_method(matrix))
 
     # Task 3
+    num_lines = 300
+    num_columns = 200
+    b = np.random.rand(num_columns,)
     random.seed(14058714618)
-    random_matrix = numpy.random.rand(300, 200)
+    random_matrix = numpy.random.rand(num_lines, num_columns)
     print("Singular values:")
     svd = numpy.linalg.svd(random_matrix)
     print(svd[1])
@@ -116,12 +119,15 @@ if __name__ == '__main__':
     print("Condition number:")
     print("\t", get_condition_number(svd[1]))
     print("Pseudo inverse:")
-    print("\t", get_pseudo_inverse(svd))
+    inverse = get_pseudo_inverse(svd)
+    print("\t", inverse)
+    xi = np.matmul(inverse, b)
+    print("XI:", xi)
 
     u, s, v = svd
     nr_s = rang + 1
-    while nr_s > rang:
-        nr_s = int(input("Enter number s (<= " + str(rang) + "): "))
+    while nr_s > rang or nr_s < 0:
+        nr_s = int(input("Enter a positive number s (<= " + str(rang) + "): "))
     As = None
     for col in range(nr_s):
         u_col = u[0:u.shape[0], col]
