@@ -2,8 +2,8 @@ from hw3 import sparse
 import random
 import numpy as np
 
-epsilon = 10e-15
-max_iterations = 10e7
+epsilon = 10e-9
+max_iterations = 10e5
 
 
 def generate_symmetric_rare_matrix(n):
@@ -30,7 +30,7 @@ def generate_random_initial_vector(n):
 def read_sparse_matrix(filename):
     result = sparse.SparseList()
     with open(filename) as f:
-        n = int(f.readline())
+        f.readline()
         f.readline()
 
         for line in f:
@@ -39,31 +39,40 @@ def read_sparse_matrix(filename):
     return result
 
 
-def is_symmetric(matrix: sparse.SparseList):
-    transposed = matrix.get_transposed()
-    if matrix == transposed:
+def is_symmetric(input_matrix: sparse.SparseList):
+    transposed = input_matrix.get_transposed()
+    if input_matrix == transposed:
         return True
     return False
 
 
-def power_method(matrix: sparse.SparseList):
-    n = matrix.rows+1
+def power_method(input_matrix: sparse.SparseList):
+    n = len(input_matrix.values)
     v = generate_random_initial_vector(n).tolist()
-    w = v * matrix
+    w = v * input_matrix
     lambda_current = np.dot(w, v)
     iteration = 0
-    while iteration < max_iterations and np.linalg.norm(w - lambda_current) < n*epsilon:
+    while iteration < max_iterations:
         v = np.multiply(1 / np.linalg.norm(w), w)
-        w = v * matrix
+        w = v.tolist() * input_matrix
         lambda_current = np.dot(w, v)
         iteration += 1
+        norm = np.linalg.norm(w - (np.multiply(lambda_current, v)))
+        if norm < n*epsilon:
+            break
+    print("\tIterations = ", iteration)
     return lambda_current
 
 
 if __name__ == '__main__':
+    # Task 1 and 2
+    print("Power method on random rare matrix:")
     random_rare_matrix = generate_symmetric_rare_matrix(501)
-    print(power_method(random_rare_matrix))
+    print("\tResult:", power_method(random_rare_matrix))
+    print("Power method on given rare matrix:")
+    matrix = read_sparse_matrix("m_rar_sim_2018.txt")
+    print("\tIs symmetric:", is_symmetric(matrix))
+    print("\tResult: ", power_method(matrix))
 
-    input_matrix = read_sparse_matrix("m_rar_sim_2018.txt")
-    print(is_symmetric(input_matrix))
-    print(power_method(input_matrix))
+    # Task 3
+
