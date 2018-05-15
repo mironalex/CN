@@ -1,3 +1,4 @@
+import numpy
 from hw3 import sparse
 import random
 import numpy as np
@@ -64,15 +65,22 @@ def power_method(input_matrix: sparse.SparseList):
     return lambda_current
 
 
+def cacat_cu_smac_rahat_si_oleaca_de_trac(matrix):
+    return numpy.linalg.svd(matrix)
+
+
+
 if __name__ == '__main__':
     # Task 1 and 2
-    print("Power method on random rare matrix:")
-    random_rare_matrix = generate_symmetric_rare_matrix(501)
-    print("\tResult:", power_method(random_rare_matrix))
-    print("Power method on given rare matrix:")
-    matrix = read_sparse_matrix("m_rar_sim_2018.txt")
-    print("\tIs symmetric:", is_symmetric(matrix))
-    print("\tResult: ", power_method(matrix))
+    # print("Power method on random rare matrix:")
+    # random_rare_matrix = generate_symmetric_rare_matrix(501)
+    # print("\tResult:", power_method(random_rare_matrix))
+    # print("Power method on given rare matrix:")
+    # matrix = read_sparse_matrix("m_rar_sim_2018.txt")
+    # print("\tIs symmetric:", is_symmetric(matrix))
+    # print("\tResult: ", power_method(matrix))
 
     # Task 3
+    cacat_cu_smac, rahat, oleaca_de_trac = cacat_cu_smac_rahat_si_oleaca_de_trac(numpy.random.rand(300, 200))
+    print(rahat)
 
