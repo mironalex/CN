@@ -1,5 +1,3 @@
-import copy
-
 epsilon = 10e-10
 
 
