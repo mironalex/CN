@@ -84,6 +84,16 @@ def get_condition_number(singular_values):
     return maximum_singular_value / minimum_singular_value
 
 
+def get_pseudo_inverse(svd):
+    u, s, v = svd
+    si = np.zeros((u.shape[0], v.shape[0]))
+    for i in range(len(s)):
+        if s[i] < 0:
+            break
+        si[i, i] = 1/s[i]
+    return np.matmul(np.matmul(u.T, si), v)
+
+
 if __name__ == '__main__':
     # Task 1 and 2
     # print("Power method on random rare matrix:")
@@ -104,7 +114,7 @@ if __name__ == '__main__':
     print("\t", get_matrix_rank(svd[1]))
     print("Condition number:")
     print("\t", get_condition_number(svd[1]))
-
-    print("")
+    print("Pseudo inverse:")
+    print("\t", get_pseudo_inverse(svd))
 
 
