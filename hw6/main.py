@@ -65,9 +65,23 @@ def power_method(input_matrix: sparse.SparseList):
     return lambda_current
 
 
-def cacat_cu_smac_rahat_si_oleaca_de_trac(matrix):
-    return numpy.linalg.svd(matrix)
+def get_matrix_rank(singular_values):
+    rank = 0
+    for value in singular_values:
+        if value > epsilon:
+            rank += 1
+    return rank
 
+
+def get_condition_number(singular_values):
+    minimum_singular_value = 10e9
+    maximum_singular_value = epsilon
+    for value in singular_values:
+        if epsilon < value < minimum_singular_value:
+            minimum_singular_value = value
+        if maximum_singular_value < value:
+            maximum_singular_value = value
+    return maximum_singular_value / minimum_singular_value
 
 
 if __name__ == '__main__':
@@ -81,6 +95,16 @@ if __name__ == '__main__':
     # print("\tResult: ", power_method(matrix))
 
     # Task 3
-    cacat_cu_smac, rahat, oleaca_de_trac = cacat_cu_smac_rahat_si_oleaca_de_trac(numpy.random.rand(300, 200))
-    print(rahat)
+    random.seed(14058714618)
+    random_matrix = numpy.random.rand(300, 200)
+    print("Singular values:")
+    svd = numpy.linalg.svd(random_matrix)
+    print(svd[1])
+    print("Matrix rang:")
+    print("\t", get_matrix_rank(svd[1]))
+    print("Condition number:")
+    print("\t", get_condition_number(svd[1]))
+
+    print("")
+
 
