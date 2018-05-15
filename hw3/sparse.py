@@ -86,6 +86,13 @@ class SparseList:
                 return
         self.values[line].append((value, column))
 
+    def get_transposed(self):
+        transposed = SparseList()
+        for line in range(0, self.rows+1):
+            for value, column in self.values[line]:
+                transposed.insert(value, column, line)
+        return transposed
+
 
 def matmul(a: SparseList, b: SparseList):
     b.values = [sorted(row, key=lambda e: e[1]) for row in b.values]
