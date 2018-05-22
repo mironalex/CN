@@ -1,6 +1,6 @@
 import math
 import random
-
+import inspect
 from hw7.main import horner
 
 
@@ -70,6 +70,10 @@ def g(f, x, h=0.00001):
         return (-1 * f(x + 2 * h) + 8 * f(x + h) - 8 * f(x - h) + f(x - 2 * h)) / (12 * h)
 
 
+def second_derivative(f, x, h=0.00001):
+    return (-1 * f(x + 2 * h) + 16 * f(x + h) - 30 * f(x) + 16 * f(x - h) - f(x - 2 * h)) / (12 * h * h)
+
+
 def sencanta_x(f, x, kmax=1000000, eps=0.000001):
     x0, x1 = x
 
@@ -108,12 +112,38 @@ def secanta(f, kmax=10000000, eps=0.00001):
     return result
 
 
+def poly_str(poly):
+    pw = len(poly) - 1
+    poly_string = "lambda x: "
+    first = True
+    for coef in poly:
+        if first:
+            first = False
+        else:
+            poly_string += " + "
+
+        poly_string += str(coef) + " * x**" + str(pw)
+        pw -= 1
+
+    return poly_string
+
+
 def test():
-    f = lambda x: x * x + math.exp(x)
     poly = [1, -4, 3]
 
-    print(muller(poly))
-    print(secanta(f))
+    root = muller(poly)
+    print("    f =", poly_str(poly))
+    print("    root =", root)
+    print("    f(root) =", horner(poly, root))
+    print("")
+
+    f = lambda x: x * x + math.exp(x)
+    x_min = secanta(f)
+
+    print(inspect.getsource(f), end='')
+    print("    - x_min =", x_min)
+    print("    - first derivative =", g(f, x_min))
+    print("    - second_derivative = ", second_derivative(f, x_min))
 
 
 if __name__ == '__main__':
